@@ -130,8 +130,8 @@ CREATE TABLE IF NOT EXISTS accounts (
   id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name                  TEXT NOT NULL,
   description           TEXT,
-  status                TEXT NOT NULL DEFAULT 'planning'
-                          CHECK (status IN ('planning','in_progress','review','complete','on_hold')),
+  status                TEXT NOT NULL DEFAULT 'active'
+                          CHECK (status IN ('active','inactive','suspended','archived','planning','in_progress','review','complete','on_hold')),
   primary_contact_name  TEXT,
   primary_contact_email TEXT,
   account_manager_id    UUID REFERENCES user_profiles(id) ON DELETE SET NULL,

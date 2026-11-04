@@ -39,6 +39,7 @@ import { createClientSupabase } from '@/lib/supabase';
 
 import TaskCreationDialog from '@/components/task-creation-dialog';
 import { CapacityDashboard } from '@/components/capacity-dashboard';
+import { AccountProposalsSection } from '@/components/proposals/account-proposals-section';
 import { MilestoneDialog } from '@/components/milestone-dialog';
 import { format, formatDistance } from 'date-fns';
 import { UserWithRoles, hasPermission } from '@/lib/rbac';
@@ -879,6 +880,14 @@ export function AccountOverview({
               </div>
             </div>
           </CardContent>
+        </Card>
+
+        {/* Commercial Proposals Section */}
+        <Card className="border-zinc-800 bg-zinc-950/40 p-4">
+          <AccountProposalsSection
+            accountId={(account as any).id}
+            canManage={hasFullAccess}
+          />
         </Card>
 
         {/* 5. Account Capacity Trends */}

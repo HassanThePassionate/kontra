@@ -514,6 +514,7 @@ export async function checkPermissionHybrid(
 
       // Accounts
       [Permission.VIEW_ACCOUNTS]: [Permission.VIEW_ALL_ACCOUNTS],
+      [Permission.VIEW_PROPOSALS]: [Permission.VIEW_ALL_PROPOSALS],
       // MANAGE_ACCOUNTS has no override — requires base permission + context
       // (VIEW_ALL_ACCOUNTS should NOT grant manage privileges)
 

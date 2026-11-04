@@ -28,6 +28,9 @@ export enum Permission {
   MANAGE_USERS_IN_ACCOUNTS = 'manage_users_in_accounts', // Assign and remove users from accounts
   VIEW_ACCOUNTS = 'view_accounts', // View accounts user has access to
   VIEW_ALL_ACCOUNTS = 'view_all_accounts', // Override: View all accounts organization-wide
+  VIEW_PROPOSALS = 'view_proposals', // View commercial proposals in assigned accounts
+  MANAGE_PROPOSALS = 'manage_proposals', // Create, edit, and transition proposals in assigned accounts
+  VIEW_ALL_PROPOSALS = 'view_all_proposals', // Override: View all proposals organization-wide
 
   // ========================================
   // PROJECT PERMISSIONS
@@ -162,6 +165,22 @@ export const PermissionDefinitions: Record<
   [Permission.VIEW_ALL_ACCOUNTS]: {
     name: 'View All Accounts',
     description: 'View all accounts across the organization (override)',
+    category: 'Account Management',
+    isOverride: true,
+  },
+  [Permission.VIEW_PROPOSALS]: {
+    name: 'View Proposals',
+    description: 'View commercial proposals in assigned client accounts',
+    category: 'Account Management',
+  },
+  [Permission.MANAGE_PROPOSALS]: {
+    name: 'Manage Proposals',
+    description: 'Create, edit, and transition commercial proposals in assigned accounts',
+    category: 'Account Management',
+  },
+  [Permission.VIEW_ALL_PROPOSALS]: {
+    name: 'View All Proposals',
+    description: 'View all commercial proposals organization-wide (override)',
     category: 'Account Management',
     isOverride: true,
   },

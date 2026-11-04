@@ -33,7 +33,7 @@ async function GET(request) {
         description,
         status,
         account_manager_id,
-        account_manager:user_profiles(
+        account_manager:user_profiles!account_manager_id(
           id,
           name,
           email,

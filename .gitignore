@@ -51,6 +51,7 @@ supabase/.branches/
 !supabase/seed.sql
 !supabase/seed-roles.sql
 !supabase/escrows.sql
+!supabase/proposals.sql
 !supabase/migrations/*.sql
 
 # =============================================================

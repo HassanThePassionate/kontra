@@ -184,6 +184,20 @@ export const createAdminSupabaseClient = () => {
 export const createServerSupabaseClient = createServerSupabase;
 
 /**
+ * Get authenticated user from API route request
+ */
+export async function getUserFromRequest(request: NextRequest) {
+  const supabase = createApiSupabaseClient(request);
+  if (!supabase) return null;
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser();
+  if (authError || !user) return null;
+  return user;
+}
+
+/**
  * Get user profile from API route supabase client
  * Use this in API routes to get the authenticated user's profile
  */

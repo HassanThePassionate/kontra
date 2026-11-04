@@ -74,7 +74,7 @@ export const createAccountSchema = z.object({
   description: z.string().max(2000, 'Description too long').optional().nullable(),
   primary_contact_name: z.string().max(200, 'Contact name too long').optional().nullable(),
   primary_contact_email: emailSchema.optional().nullable(),
-  status: z.enum(['active', 'inactive', 'archived']).optional(),
+  status: z.enum(['active', 'inactive', 'suspended', 'archived', 'planning', 'in_progress', 'review', 'complete', 'on_hold']).optional(),
   account_manager_id: optionalUuidSchema.optional(),
 });
 
@@ -83,7 +83,7 @@ export const updateAccountSchema = z.object({
   description: z.string().max(2000).optional().nullable(),
   primary_contact_name: z.string().max(200).optional().nullable(),
   primary_contact_email: emailSchema.optional().nullable(),
-  status: z.enum(['active', 'inactive', 'archived']).optional(),
+  status: z.enum(['active', 'inactive', 'suspended', 'archived', 'planning', 'in_progress', 'review', 'complete', 'on_hold']).optional(),
   account_manager_id: optionalUuidSchema.optional(),
 });
 
@@ -485,3 +485,50 @@ export type SubmitFormResponseInput = z.infer<typeof submitFormResponseSchema>;
 export type SendClientInvitationInput = z.infer<typeof sendClientInvitationSchema>;
 export type AcceptClientInvitationInput = z.infer<typeof acceptClientInvitationSchema>;
 export type SubmitClientFeedbackInput = z.infer<typeof submitClientFeedbackSchema>;
+
+// ============================================================================
+// PROPOSAL SCHEMAS
+// ============================================================================
+
+export const deliverableItemSchema = z.object({
+  id: z.string().optional(),
+  title: z.string().min(1, 'Deliverable title is required').max(300),
+  description: z.string().max(2000).optional().nullable(),
+  estimated_hours: nonNegativeNumberSchema.optional().nullable(),
+  amount: nonNegativeNumberSchema.optional().nullable(),
+});
+
+export const createProposalSchema = z.object({
+  account_id: uuidSchema,
+  title: z.string().min(1, 'Title is required').max(300, 'Title too long'),
+  total_amount: nonNegativeNumberSchema,
+  currency: z.string().length(3, 'Currency must be a 3-letter code').default('USD'),
+  valid_until: z.string().datetime('Valid until must be an ISO datetime string'),
+  deliverables: z.array(deliverableItemSchema).default([]),
+  internal_notes: z.string().max(5000).optional().nullable(),
+});
+
+export const updateProposalSchema = z.object({
+  title: z.string().min(1).max(300).optional(),
+  total_amount: nonNegativeNumberSchema.optional(),
+  currency: z.string().length(3).optional(),
+  valid_until: z.string().datetime().optional(),
+  deliverables: z.array(deliverableItemSchema).optional(),
+  internal_notes: z.string().max(5000).optional().nullable(),
+});
+
+export const proposalTransitionSchema = z.object({
+  action: z.enum(['send', 'accept', 'reject', 'draft', 'archive', 'restore', 'expire']),
+  reason: z.string().max(2000).optional().nullable(),
+  metadata: z.record(z.string(), z.any()).optional().default({}),
+});
+
+export const clientRejectProposalSchema = z.object({
+  reason: z.string().min(1, 'A rejection reason is required').max(2000),
+});
+
+export type DeliverableItemInput = z.infer<typeof deliverableItemSchema>;
+export type CreateProposalInput = z.infer<typeof createProposalSchema>;
+export type UpdateProposalInput = z.infer<typeof updateProposalSchema>;
+export type ProposalTransitionInput = z.infer<typeof proposalTransitionSchema>;
+export type ClientRejectProposalInput = z.infer<typeof clientRejectProposalSchema>;

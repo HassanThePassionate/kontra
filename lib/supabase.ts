@@ -584,11 +584,155 @@ export interface Database {
           updated_at?: string;
         };
       };
+      proposals: {
+        Row: {
+          id: string;
+          account_id: string;
+          title: string;
+          status: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+          deliverables: Json[];
+          total_amount: number;
+          currency: string;
+          valid_until: string;
+          sent_at: string | null;
+          accepted_at: string | null;
+          rejected_at: string | null;
+          rejection_reason: string | null;
+          internal_notes: string | null;
+          version: number;
+          archived_at: string | null;
+          archived_by: string | null;
+          created_by: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          account_id: string;
+          title: string;
+          status?: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+          deliverables?: Json[];
+          total_amount?: number;
+          currency?: string;
+          valid_until: string;
+          sent_at?: string | null;
+          accepted_at?: string | null;
+          rejected_at?: string | null;
+          rejection_reason?: string | null;
+          internal_notes?: string | null;
+          version?: number;
+          archived_at?: string | null;
+          archived_by?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          account_id?: string;
+          title?: string;
+          status?: 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+          deliverables?: Json[];
+          total_amount?: number;
+          currency?: string;
+          valid_until?: string;
+          sent_at?: string | null;
+          accepted_at?: string | null;
+          rejected_at?: string | null;
+          rejection_reason?: string | null;
+          internal_notes?: string | null;
+          version?: number;
+          archived_at?: string | null;
+          archived_by?: string | null;
+          created_by?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
+      proposal_history: {
+        Row: {
+          id: string;
+          proposal_id: string;
+          from_status: string | null;
+          to_status: string;
+          action:
+            | 'create'
+            | 'update'
+            | 'send'
+            | 'accept'
+            | 'reject'
+            | 'draft'
+            | 'expire'
+            | 'archive'
+            | 'restore';
+          rejection_reason: string | null;
+          actor_id: string | null;
+          actor_email: string | null;
+          actor_type: 'staff' | 'client' | 'system';
+          metadata: Json;
+          snapshot: Json;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          proposal_id: string;
+          from_status?: string | null;
+          to_status: string;
+          action:
+            | 'create'
+            | 'update'
+            | 'send'
+            | 'accept'
+            | 'reject'
+            | 'draft'
+            | 'expire'
+            | 'archive'
+            | 'restore';
+          rejection_reason?: string | null;
+          actor_id?: string | null;
+          actor_email?: string | null;
+          actor_type: 'staff' | 'client' | 'system';
+          metadata?: Json;
+          snapshot: Json;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          proposal_id?: string;
+          from_status?: string | null;
+          to_status?: string;
+          action:
+            | 'create'
+            | 'update'
+            | 'send'
+            | 'accept'
+            | 'reject'
+            | 'draft'
+            | 'expire'
+            | 'archive'
+            | 'restore';
+          rejection_reason?: string | null;
+          actor_id?: string | null;
+          actor_email?: string | null;
+          actor_type?: 'staff' | 'client' | 'system';
+          metadata?: Json;
+          snapshot?: Json;
+          created_at?: string;
+        };
+      };
     };
   };
 }
 
 // Type definitions for better type safety
+export type Json =
+  | string
+  | number
+  | boolean
+  | null
+  | { [key: string]: Json | undefined }
+  | Json[];
+
 export type UserProfile = Database['public']['Tables']['user_profiles']['Row'];
 export type Department = Database['public']['Tables']['departments']['Row'];
 export type Role = Database['public']['Tables']['roles']['Row'];
@@ -602,6 +746,11 @@ export type ProjectAssignment = Database['public']['Tables']['project_assignment
 export type UserAvailability = Database['public']['Tables']['user_availability']['Row'];
 export type TimeEntry = Database['public']['Tables']['time_entries']['Row'];
 export type TaskWeekAllocation = Database['public']['Tables']['task_week_allocations']['Row'];
+export type Proposal = Database['public']['Tables']['proposals']['Row'];
+export type ProposalInsert = Database['public']['Tables']['proposals']['Insert'];
+export type ProposalUpdate = Database['public']['Tables']['proposals']['Update'];
+export type ProposalHistory = Database['public']['Tables']['proposal_history']['Row'];
+export type ProposalHistoryInsert = Database['public']['Tables']['proposal_history']['Insert'];
 
 /**
  * A Supabase client instance (browser or server).

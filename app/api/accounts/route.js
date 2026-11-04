@@ -119,7 +119,7 @@ async function POST(request) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    const { data: account, error } = await admin
+    let { data: account, error } = await admin
       .from('accounts')
       .insert({
         name: validation.data.name,
@@ -134,6 +134,33 @@ async function POST(request) {
       .single();
 
     if (error) {
+      if (error.code === '23514' && error.message && error.message.includes('accounts_status_check')) {
+        const fallbackStatus = (validation.data.status === 'active' || !validation.data.status) ? 'in_progress' : 'planning';
+        const retry = await admin
+          .from('accounts')
+          .insert({
+            name: validation.data.name,
+            description: validation.data.description || null,
+            primary_contact_name: validation.data.primary_contact_name || null,
+            primary_contact_email: validation.data.primary_contact_email || null,
+            status: fallbackStatus,
+            account_manager_id: validation.data.account_manager_id || user.id,
+            created_at: new Date().toISOString(),
+          })
+          .select()
+          .single();
+
+        if (!retry.error) {
+          logger.info('Account created successfully with fallback status', {
+            action: 'create_account',
+            userId: user.id,
+            accountId: retry.data.id,
+          });
+          return NextResponse.json({ success: true, account: retry.data }, { status: 201 });
+        }
+        error = retry.error;
+      }
+
       if (error.code === '23505') {
         return NextResponse.json(
           { error: 'An account with this name already exists' },
